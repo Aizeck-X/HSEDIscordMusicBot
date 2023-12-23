@@ -1,26 +1,28 @@
-Discord Music Bot Documentation
+**Discord Music Bot Documentation**
 This music bot is a Discord application that connects to voice channels to play music. Powered by discord.py and wavelink libraries, it allows users to control music playback with simple text commands issued on Discord servers.
 
-Setup
+**Setup**
 To run this bot, you must have a valid Discord bot token, which should be stored in config.py as token. Additionally, the bot requires a running instance of Lavalink, which is a standalone application responsible for audio processing and streaming.
 
-Features
+**Features**
 Connect to Discord voice channels
 Search and play music tracks
 Queue music tracks
 Skip, stop, and control the volume of tracks
 Support for track playback repeat mode
 Display the current music queue
-Commands
+
+**Commands**
 The bot recognizes the following text commands:
 
-!!play [search_terms]: Searches for a track and plays it or adds it to the queue.
+!!play [url (youtube)]: Searches for a track and plays it or adds it to the queue.
 !!stop: Stops the music and clears the queue.
 !!skip: Skips the currently playing track or stops the track if nothing is in the queue.
-!!volume [level]: Sets the playback volume to a specific level (0-100).
-!!repeat: Toggles repeat mode on and off.
+!!volume [level]: Sets the playback volume to a specific level (0-150).
+!!repeat on/off: Toggles repeat mode on and off.
 !!queue: Displays the current music queue.
-Events
+
+**Events**
 The bot responds to the following events:
 
 on_ready: An event for indicating that the bot has successfully connected to Discord.
@@ -39,7 +41,7 @@ Use the available commands in any text channel within your server where the bot 
 Make sure that you handle permissions correctly, as the bot requires various permissions like connecting to voice channels, speaking, and sending messages to the text channels.
 
 Dependencies
-Python 3.6 or higher
+Python 3.11 and higher
 discord.py
 wavelink
 A valid discord bot token
