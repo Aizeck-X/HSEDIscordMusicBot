@@ -1,3 +1,4 @@
+from multiprocessing.connection import Client
 import discord
 from discord.ext import commands
 import wavelink
@@ -5,19 +6,11 @@ from config import token
 
 client = commands.Bot(command_prefix="!!", intents=discord.Intents.all())
 
-
 class CustomPlayer(wavelink.Player):
 
     def __init__(self):
         super().__init__()
         self.queue = wavelink.Queue()
-
-
-# HTTPS and websocket operations
-@client.event
-async def on_ready():
-    print("Bot ready")
-
 
 # helper function
 @client.event
@@ -26,13 +19,10 @@ async def on_node():
     node: wavelink.Node = wavelink.Node._connect(uri="lavalink.oryzen.xyz:80", password="oryzen.xyz", client=client)
     wavelink.player.autoplay = True
 
-
 # events
-
 @client.event
 async def on_wavelink_node_ready(node: wavelink.Node):
     print(f'Node: <{node.identifier}> is ready!')
-
 
 @client.event
 async def on_wavelink_track_end(player: CustomPlayer, track: wavelink.tracks, reason):
@@ -40,9 +30,12 @@ async def on_wavelink_track_end(player: CustomPlayer, track: wavelink.tracks, re
         next_track = player.queue.get()
         await player.play(next_track)
 
+@client.event
+async def on_ready():
+    print("Bot ready")
+
 
 # commands
-
 @client.command()
 async def stop(ctx):
     vc = ctx.voice_client
@@ -80,7 +73,6 @@ async def play(ctx, *, search: str):
             description=f"Playing {vc.source.title} in {vc.channel}"
         ))
 
-
 @client.command()
 async def skip(ctx):
     vc = ctx.voice_client
@@ -105,7 +97,6 @@ async def volume(ctx, volume: int):
     await ctx.send_message(f"🔈 Volume changed from {ctx.voice_client.source.volume} to {volume / 100}")
     ctx.voice_client.source.volume = volume / 100
 
-
 @client.command()
 async def repeat(ctx):
 
@@ -117,7 +108,6 @@ async def repeat(ctx):
         await ctx.send('🎶 Repeat mode is now `All`')
         loop = True
     
-
 @client.command()
 async def queue(ctx):
 
@@ -139,6 +129,5 @@ async def queue(ctx):
         await ctx.send_message(embed)
     else:
         await ctx.send_message(f"🚫 There must be music playing to use that!")
-
 
 client.run(token)
