@@ -8,6 +8,17 @@ client = commands.Bot(command_prefix="!!", intents=discord.Intents.all())
 
 class CustomPlayer(wavelink.Player):
 
+    """
+    This class represents a custom player that extends the functionality of the wavelink.Player class.
+
+    Attributes:
+    - queue (wavelink.Queue): A queue object used for managing the playback queue.
+
+    Methods:
+    - __init__(): Initializes the CustomPlayer object and sets up the queue.
+
+    """
+    
     def __init__(self):
         super().__init__()
         self.queue = wavelink.Queue()
@@ -15,6 +26,17 @@ class CustomPlayer(wavelink.Player):
 # helper function
 @client.event
 async def on_node():
+        
+    """
+    This function is an event handler that is triggered when a node is connected.
+    It connects to a Wavelink node using the specified URI and password, and sets the autoplay option to True.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     
     node: wavelink.Node = wavelink.Node._connect(uri="lavalink.oryzen.xyz:80", password="oryzen.xyz", client=client)
     wavelink.player.autoplay = True
@@ -22,22 +44,73 @@ async def on_node():
 # events
 @client.event
 async def on_wavelink_node_ready(node: wavelink.Node):
-    print(f'Node: <{node.identifier}> is ready!')
+
+    """
+    This function is an event handler that is triggered when a Wavelink node is ready.
+    It prints a message indicating that the node with its identifier is ready.
+
+    Parameters:
+    - node (wavelink.Node): The Wavelink node that is ready.
+
+    Returns:
+    None
+    """
+
+    print(f"Node: <{node.identifier}> is ready!")
+
 
 @client.event
 async def on_wavelink_track_end(player: CustomPlayer, track: wavelink.tracks, reason):
+
+    """
+    This function is an event handler that is triggered when a Wavelink track ends.
+    If the player's queue is not empty, it retrieves the next track from the queue and plays it.
+
+    Parameters:
+    - player (CustomPlayer): The Wavelink player.
+    - track (wavelink.tracks): The track that has ended.
+    - reason: The reason for the track ending.
+
+    Returns:
+    None
+    """
+
     if not player.queue.is_empty:
         next_track = player.queue.get()
         await player.play(next_track)
 
+
 @client.event
 async def on_ready():
+
+    """
+    This function is an event handler that is triggered when the bot is ready.
+    It prints a message indicating that the bot is ready.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
+
     print("Bot ready")
 
 
 # commands
 @client.command()
 async def stop(ctx):
+
+    """
+    This command stops the player and disconnects the bot from the voice channel.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The context of the command.
+    
+    Returns:
+    None
+    """
+    
     vc = ctx.voice_client
     if vc:
         await vc.disconnect()
@@ -45,6 +118,17 @@ async def stop(ctx):
 
 @client.command()
 async def play(ctx, *, search: str):
+
+    """
+    This command plays a song or adds it to the queue if there is already a song playing.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The context of the command.
+    - search (str): The search query for the song to be played.
+    
+    Returns:
+    None
+    """
 
     tracks: wavelink.Search = await wavelink.Playable.search(search)
     
@@ -75,6 +159,17 @@ async def play(ctx, *, search: str):
 
 @client.command()
 async def skip(ctx):
+
+    """
+    This command skips the currently playing song and plays the next song in the queue.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The context of the command.
+    
+    Returns:
+    None
+    """
+    
     vc = ctx.voice_client
     if vc:
         if not vc.is_playing():
@@ -91,6 +186,18 @@ async def skip(ctx):
 
 @client.command()
 async def volume(ctx, volume: int):
+    
+    """
+    This command changes the volume of the currently playing song.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The context of the command.
+    - volume (int): The desired volume level (0-100).
+    
+    Returns:
+    None
+    """
+
     if (ctx.voice_client is None):
         return await ctx.send_message(f"🚫 There must be music playing to use that!")
     
@@ -99,6 +206,16 @@ async def volume(ctx, volume: int):
 
 @client.command()
 async def repeat(ctx):
+
+    """
+    This command toggles the repeat mode on or off.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The context of the command.
+    
+    Returns:
+    None
+    """
 
     if loop:
         await ctx.send('🎶 Repeat mode is now `Off`')
@@ -110,6 +227,16 @@ async def repeat(ctx):
     
 @client.command()
 async def queue(ctx):
+
+    """
+    This command displays the current song queue.
+    
+    Parameters:
+    - ctx (discord.ext.commands.Context): The context of the command.
+    
+    Returns:
+    None
+    """
 
     vc = ctx.voice_client
 
